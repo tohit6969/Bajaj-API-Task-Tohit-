@@ -5,13 +5,14 @@ import com.bfhl.dto.BfhlResponse;
 import com.bfhl.service.BfhlService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/bfhl")
 public class BfhlController {
 
     private final BfhlService bfhlService;
@@ -20,11 +21,15 @@ public class BfhlController {
         this.bfhlService = bfhlService;
     }
 
-    /**
-     * POST /bfhl
-     * Accepts an array of strings/numbers/special chars and returns categorised results.
-     */
-    @PostMapping
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, String>> health() {
+        return ResponseEntity.ok(Map.of(
+                "status", "UP",
+                "message", "BFHL API is running"
+        ));
+    }
+
+    @PostMapping("/bfhl")
     public ResponseEntity<BfhlResponse> process(@Valid @RequestBody BfhlRequest request) {
         BfhlResponse response = bfhlService.processData(request);
         return ResponseEntity.ok(response);
